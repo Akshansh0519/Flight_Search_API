@@ -6,6 +6,10 @@ const { InfoController } = require('../../controllers');
 
 const  AirplaneRoutes  = require('./airplane-routes');
 
+const CityRoutes = require('./city-routes');
+
+router.use('/cities', CityRoutes);
+
 router.use('/airplanes', AirplaneRoutes);
 
 router.get('/info',InfoController.info); 

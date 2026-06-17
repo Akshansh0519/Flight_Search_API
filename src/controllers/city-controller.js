@@ -1,19 +1,16 @@
-const  { AirplaneService }  = require('../services');
+const  { CityService }  = require('../services');
 const { StatusCodes, AppError } = require('../utils');
-/*
-    POST : /airplanes
-    req-body {modelNumber:'airbus-320', capacity:200}
-*/
-async function createAirplane(req,res){
+
+async function createCity(req,res){
     try{
-        const airplane = await AirplaneService.createAirplane({
-            modelNumber : req.body.modelNumber, 
-            capacity : req.body.capacity
+        const city = await CityService.createCity({
+            name : req.body.name, 
+            code : req.body.code
         });
         return res.status(StatusCodes.CREATED).json({   
             success: true,
-            data: airplane, 
-            message: 'Successfully created an airplane',
+            data: city, 
+            message: 'Successfully created a city',
             error: {}
         });
     }
@@ -25,19 +22,19 @@ async function createAirplane(req,res){
         return res.status(statusCode).json({
             success: false,
             data: {},
-            message: error.message || 'Something went wrong while creating an airplane',
+            message: error.message || 'Something went wrong while creating a city',
             error: error 
         });
     }
 }
 
-async function getAirplanes(req,res){
+async function getCities(req,res){
     try{
-        const airplane = await AirplaneService.getAirplanes();
+        const cities = await CityService.getCities();
         return res.status(StatusCodes.OK).json({
             success: true,
-            data: airplane,
-            message: 'Successfully fetched airplanes',
+            data: cities,
+            message: 'Successfully fetched cities',
             error: {}
         });
     }
@@ -55,17 +52,17 @@ async function getAirplanes(req,res){
     }
 }
 
-async function getAirplane(req,res){
+async function getCity(req,res){
     try{
-        const airplane = await AirplaneService.getAirplane(req.params.id);
-        if(!airplane){
-            throw new AppError('Airplane not found', StatusCodes.NOT_FOUND);
+        const city = await CityService.getCity(req.params.id);
+        if(!city){
+            throw new AppError('City not found', StatusCodes.NOT_FOUND);
         }
         else{
             return res.status(StatusCodes.OK).json({
                 success: true,
-                data: airplane,
-                message: 'Successfully fetched the airplane',
+                data: city,
+                message: 'Successfully fetched the city',
                 error: {}
             });
         }
@@ -84,13 +81,13 @@ async function getAirplane(req,res){
     }
 }
 
-async function destroyAirplane(req,res){
+async function destroyCity(req,res){
     try{
-        const response = await AirplaneService.destroyAirplane(req.params.id);
+        const response = await CityService.destroyCity(req.params.id);
         return res.status(StatusCodes.OK).json({
             success: true,
             data: response,
-            message: 'Successfully destroyed the airplane',
+            message: 'Successfully destroyed the city',
             error: {}
         });
     }
@@ -108,13 +105,13 @@ async function destroyAirplane(req,res){
     }
 }
 
-async function updateAirplane(req,res){
+async function updateCity(req,res){
     try{
-        const response = await AirplaneService.updateAirplane(req.params.id, req.body);
+        const response = await CityService.updateCity(req.params.id, req.body);
         return res.status(StatusCodes.OK).json({
             success: true,
             data: response,
-            message: 'Successfully updated the airplane',
+            message: 'Successfully updated the city',
             error: {}
         });
     }
@@ -132,13 +129,13 @@ async function updateAirplane(req,res){
     }
 }
 
-async function putAirplane(req,res){
+async function putCity(req,res){
     try{
-        const response = await AirplaneService.putAirplane(req.params.id, req.body);
+        const response = await CityService.putCity(req.params.id, req.body);
         return res.status(StatusCodes.OK).json({
             success: true,
             data: response,
-            message: 'Successfully updated the airplane',
+            message: 'Successfully updated the city',
             error: {}
         });
     }
@@ -157,10 +154,10 @@ async function putAirplane(req,res){
 }
 
 module.exports = {
-    createAirplane,
-    getAirplanes,
-    getAirplane,
-    destroyAirplane,
-    updateAirplane,
-    putAirplane
+    createCity,
+    getCities,
+    getCity,
+    destroyCity,
+    updateCity,
+    putCity
 }
