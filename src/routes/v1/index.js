@@ -3,15 +3,15 @@ const express = require('express');
 const router = express.Router();
 
 const { InfoController } = require('../../controllers');
+router.get('/info',InfoController.info); 
 
 const  AirplaneRoutes  = require('./airplane-routes');
-
-const CityRoutes = require('./city-routes');
-
-router.use('/cities', CityRoutes);
-
 router.use('/airplanes', AirplaneRoutes);
 
-router.get('/info',InfoController.info); 
+const AirportRoutes = require('./airport-routes');
+router.use('/airports', AirportRoutes);
+
+const CityRoutes = require('./city-routes');
+router.use('/cities', CityRoutes);
 
 module.exports = router;
