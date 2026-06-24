@@ -1,4 +1,5 @@
 const { StatusCodes } = require('http-status-codes');
+const { compareTime } = require('./helpers/date-time-helpers');
 
 class AppError extends Error {
     constructor(message, statusCode) {
@@ -9,5 +10,6 @@ class AppError extends Error {
 
 module.exports = {
     AppError,
-    StatusCodes
+    StatusCodes,
+    compareTime
 }

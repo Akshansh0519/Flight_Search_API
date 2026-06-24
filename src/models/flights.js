@@ -12,19 +12,21 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.belongsTo(models.Airplane, {
-        foreignKey: 'airplaneId',
+        foreignKey: 'aeroplaneId',
         as: 'airplane',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
       });
       this.belongsTo(models.Airport, {
         foreignKey: 'departureAirportId',
+        targetKey: 'code',
         as: 'departureAirport',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
       });
       this.belongsTo(models.Airport, {
         foreignKey: 'arrivalAirportId',
+        targetKey: 'code',
         as: 'arrivalAirport',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
@@ -41,14 +43,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Aeroplanes',
+        model: 'Airplanes',
         key: 'id'
       },
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'
     },
     departureAirportId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false,
       references: {
         model: 'Airports',
@@ -58,7 +60,7 @@ module.exports = (sequelize, DataTypes) => {
       onUpdate: 'CASCADE'
     },
     arrivalAirportId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false,
       references: {
         model: 'Airports',

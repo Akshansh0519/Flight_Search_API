@@ -18,7 +18,7 @@ module.exports = {
       name: 'fk_flights_departure_airport',
       references: {
         table: 'Airports',
-        field: 'id'
+        field: 'code'
       },
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'
@@ -30,7 +30,7 @@ module.exports = {
       name: 'fk_flights_arrival_airport',
       references: {
         table: 'Airports',
-        field: 'id'
+        field: 'code'
       },
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'
