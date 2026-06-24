@@ -10,7 +10,7 @@ const { StatusCodes, AppError } = require('../utils');
         departureTime:'2023-10-10T10:00:00Z', 
         arrivalTime:'2023-10-10T12:00:00Z',
         price:200,
-        boardngGate:'A1',
+        boardingGate:'A1',
         totalSeats:200
     }
 */
@@ -24,7 +24,7 @@ async function createFlight(req,res){
             departureTime : req.body.departureTime,
             arrivalTime : req.body.arrivalTime,
             price : req.body.price,
-            boardngGate : req.body.boardngGate,
+            boardngGate : req.body.boardingGate || req.body.boardngGate,
             totalSeats : req.body.totalSeats
         });
         return res.status(StatusCodes.CREATED).json({   
@@ -47,6 +47,32 @@ async function createFlight(req,res){
         });
     }
 }
+
+async function getAllFlights(req, res) {
+    try {
+        const filter = req.query || {};
+        const flights = await FlightService.getAllFlights(filter);
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            data: flights,
+            message: 'Successfully fetched all flights',
+            error: {}
+        });
+    }   
+    catch (error) {
+        let statusCode = StatusCodes.INTERNAL_SERVER_ERROR;
+        if (error instanceof AppError) {
+            statusCode = error.statusCode;
+        }
+        return res.status(statusCode).json({
+            success: false,
+            data: {},
+            message: error.message || 'Something went wrong while fetching flights',
+            error: error
+        });
+    }
+}
 module.exports = {
-    createFlight
+    createFlight,
+    getAllFlights
 }

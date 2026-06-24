@@ -11,6 +11,7 @@ function validateFlight(req, res, next) {
         arrivalTime,
         price,
         boardngGate,
+        boardingGate,
         totalSeats
     } = req.body || {};
 
@@ -54,7 +55,9 @@ function validateFlight(req, res, next) {
         return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Price is required and must be a number.' });
     }
 
-    if (!boardngGate || typeof boardngGate !== 'string') {
+    const gate = boardingGate || boardngGate;
+
+    if (!gate || typeof gate !== 'string') {
         return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Boarding Gate is required and must be a string.' });
     }
 

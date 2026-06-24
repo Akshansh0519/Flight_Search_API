@@ -10,4 +10,7 @@ const { FlightMiddleware } = require('../../middlewares');
 // /api/v1/airports POST 
 router.post('/', FlightMiddleware.validateFlight, FlightController.createFlight);
 
+// /api/v1/flights?trips=DEL-HYD GET
+router.get('/', FlightController.getAllFlights);
+
 module.exports = router;
