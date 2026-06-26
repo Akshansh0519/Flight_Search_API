@@ -1,5 +1,5 @@
 const CrudRepository = require('./crud-repository');
-const { Flights , Airplane , Airport } = require('../models');
+const { Flights , Airplane , Airport , City} = require('../models');
 
 class FlightsRepository extends CrudRepository {
     constructor(){
@@ -20,12 +20,26 @@ class FlightsRepository extends CrudRepository {
                 {
                     model : Airport ,
                     as : 'departureAirport' ,
-                    required: true
+                    required: true,
+                    include: [
+                        {
+                            model : City,
+                            as : 'city' ,
+                            required: true
+                        }
+                    ]
                 },
                 {
                     model : Airport ,
                     as : 'arrivalAirport' ,
-                    required: true
+                    required: true,
+                    include: [
+                        {
+                            model : City,
+                            as : 'city' ,
+                            required: true
+                        }
+                    ]
                 }
             ]
         });
