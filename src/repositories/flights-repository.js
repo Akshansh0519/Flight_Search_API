@@ -44,6 +44,29 @@ class FlightsRepository extends CrudRepository {
             ]
         });
     }
+
+    async updateRemainingSeats(flightId, seats, dec = true) {
+        const flight = await Flights.findByPk(flightId);
+        if (!flight) {
+            throw new Error('Flight not found');
+        }
+        const seatCount = Number(seats);
+        if (Number.isNaN(seatCount) || seatCount <= 0) {
+            throw new Error('Seats must be a positive number');
+        }
+        if (dec) {
+            if (flight.totalSeats < seatCount) {
+                throw new Error('Not enough seats available');
+            }
+            flight.totalSeats -= seatCount;
+        } else {
+            flight.totalSeats += seatCount;
+        }
+        await flight.save();
+        return flight;
+    }
 }
+
+
 
 module.exports = FlightsRepository;

@@ -101,9 +101,42 @@ async function getFlight(req,res){
     }
 }
 
+
+async function updateRemainingSeats(req, res) {
+    try {
+        const { flightId } = req.params;
+        const { seats, dec } = req.body;
+        const normalizedSeats = Number(seats);
+        const normalizedDec = dec === undefined ? undefined : dec === true || dec === 'true' || dec === '1' || dec === 'on';
+        const flight = await FlightService.updateRemainingSeats({
+            flightId,
+            seats: normalizedSeats,
+            dec: normalizedDec
+        });
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            data: flight,
+            message: 'Successfully updated remaining seats',
+            error: {}
+        });
+    }
+    catch (error) {
+        let statusCode = StatusCodes.INTERNAL_SERVER_ERROR;
+        if (error instanceof AppError) {
+            statusCode = error.statusCode;
+        }
+        return res.status(statusCode).json({
+            success: false,
+            data: {},
+            message: error.message || 'Something went wrong while updating remaining seats',
+            error: error
+        });
+    }
+}
 module.exports = {
     createFlight,
     getAllFlights,
-    getFlight
+    getFlight,
+    updateRemainingSeats
 }
 

@@ -68,6 +68,17 @@ function validateFlight(req, res, next) {
     next();
 }
 
+function validateFlightIdAndSeats(req, res, next) {
+    if (!req.body || req.body.seats === undefined) {
+        return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Seats should be provided in the request body.' });
+    }
+
+    if (Number.isNaN(Number(req.body.seats)) || Number(req.body.seats) <= 0) {
+        return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Seats must be a positive number.' });
+    }
+    next();
+}
 module.exports = {
-    validateFlight
+    validateFlight,
+    validateFlightIdAndSeats
 };
