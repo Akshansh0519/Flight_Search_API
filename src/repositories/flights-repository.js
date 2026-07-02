@@ -1,5 +1,6 @@
 const CrudRepository = require('./crud-repository');
-const { Flights , Airplane , Airport , City} = require('../models');
+const db = require('../models');
+const { Flights , Airplane , Airport , City} = db;
 
 class FlightsRepository extends CrudRepository {
     constructor(){
@@ -46,24 +47,39 @@ class FlightsRepository extends CrudRepository {
     }
 
     async updateRemainingSeats(flightId, seats, dec = true) {
-        const flight = await Flights.findByPk(flightId);
-        if (!flight) {
-            throw new Error('Flight not found');
-        }
-        const seatCount = Number(seats);
-        if (Number.isNaN(seatCount) || seatCount <= 0) {
-            throw new Error('Seats must be a positive number');
-        }
-        if (dec) {
-            if (flight.totalSeats < seatCount) {
-                throw new Error('Not enough seats available');
+        const transaction = await db.sequelize.transaction();
+        try {
+            const flight = await Flights.findByPk(flightId, {
+                transaction: transaction,
+                lock: transaction.LOCK.UPDATE
+            });
+            if (!flight) {
+                await transaction.rollback();
+                throw new Error('Flight not found');
             }
-            flight.totalSeats -= seatCount;
-        } else {
-            flight.totalSeats += seatCount;
+            const seatCount = Number(seats);
+            if (Number.isNaN(seatCount) || seatCount <= 0) {
+                await transaction.rollback();
+                throw new Error('Seats must be a positive number');
+            }
+            if (dec) {
+                if (flight.totalSeats < seatCount) {
+                    await transaction.rollback();
+                    throw new Error('Not enough seats available');
+                }
+                flight.totalSeats -= seatCount;
+            } else {
+                flight.totalSeats += seatCount;
+            }
+            await flight.save({ transaction: transaction });
+            await transaction.commit();
+            return flight;
+        } catch (error) {
+            if (!transaction.finished) {
+                await transaction.rollback();
+            }
+            throw error;
         }
-        await flight.save();
-        return flight;
     }
 }
 
