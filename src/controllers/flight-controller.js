@@ -72,7 +72,38 @@ async function getAllFlights(req, res) {
         });
     }
 }
+
+/*
+* POST : /flights/:id
+* req-params : id
+*/
+async function getFlight(req,res){
+    try{
+        const flight = await FlightService.getFlightById(req.params.id);
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            data: flight,
+            message: 'Successfully fetched the flight',
+            error: {}
+        });
+    }
+    catch(error){
+        let statusCode = StatusCodes.INTERNAL_SERVER_ERROR;
+        if(error instanceof AppError) {
+            statusCode = error.statusCode;
+        }
+        return res.status(statusCode).json({
+            success: false,
+            data: {},
+            message: error.message || 'Something went wrong while fetching the flight',
+            error: error 
+        });
+    }
+}
+
 module.exports = {
     createFlight,
-    getAllFlights
+    getAllFlights,
+    getFlight
 }
+
