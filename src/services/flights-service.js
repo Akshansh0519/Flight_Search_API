@@ -60,14 +60,9 @@ async function getAllFlights(filter){
         }
 
 
-        if(filter.departureDate){
-            const startDate = new Date(`${filter.departureDate}T00:00:00.000Z`);
-            const endDate = new Date(`${filter.departureDate}T23:59:59.999Z`);
-
-            customFilter.departureTime = {
-                [Op.between]: [startDate, endDate]
-            };
-        }
+        // NOTE: departureDate is intentionally NOT used as a DB filter.
+        // All flights for a route are always available. The frontend uses the
+        // user's chosen travel date to display the departure/arrival times on that date.
 
         if(filter.sort){
             const params = filter.sort.split(',');

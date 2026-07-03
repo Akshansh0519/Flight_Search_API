@@ -203,3 +203,17 @@ USE flights_development;
 - Logs are written through Winston.
 - The project uses MySQL through Sequelize.
 - The codebase is already organized for future CRUD expansion.
+
+## How to RUN
+
+# Terminal 1 — Flight Search API (Port 3000)
+cd "C:\Users\AKSHANSH RANJAN\Desktop\Code\Flights_Booking_Service"
+npm start
+
+# Terminal 2 — Booking Service (Port 4000)
+cd "C:\Users\AKSHANSH RANJAN\Desktop\Code\Booking_Service"
+npm start
+
+# Terminal 3 — Frontend
+cd "C:\Users\AKSHANSH RANJAN\Desktop\Code\Flights_Booking_Service\frontend"
+npm run dev
