@@ -8,6 +8,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended : true}));
 
 app.use('/api',apiRoutes);
+//app.use('/flightService/api',apiRoutes); // used path.rewrite in nginx.conf to rewrite the path to /api
 
 app.listen(ServerConfig.PORT,()=>{
     console.log(`Server is running on port ${ServerConfig.PORT}`);
