@@ -204,16 +204,24 @@ USE flights_development;
 - The project uses MySQL through Sequelize.
 - The codebase is already organized for future CRUD expansion.
 
-## How to RUN
+## How to RUN the Complete Microservice Ecosystem
 
+Ensure MySQL and RabbitMQ (`amqp://localhost`) are running locally before starting the services.
+
+```bash
 # Terminal 1 — Flight Search API (Port 3000)
 cd "C:\Users\AKSHANSH RANJAN\Desktop\Code\Flights_Booking_Service"
 npm start
 
-# Terminal 2 — Booking Service (Port 4000)
+# Terminal 2 — Notification & Email Service (Port 3002)
+cd "C:\Users\AKSHANSH RANJAN\Desktop\Code\Notification-Service-Flights"
+npm start
+
+# Terminal 3 — Booking & Payment Service (Port 4000)
 cd "C:\Users\AKSHANSH RANJAN\Desktop\Code\Booking_Service"
 npm start
 
-# Terminal 3 — Frontend
+# Terminal 4 — Next.js Frontend App (Port 3001 or 3000)
 cd "C:\Users\AKSHANSH RANJAN\Desktop\Code\Flights_Booking_Service\frontend"
 npm run dev
+```
