@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { ArrowRight, Plane } from "lucide-react";
 
 interface HeroProps {
@@ -9,24 +9,31 @@ interface HeroProps {
 }
 
 export default function Hero({ onOpenBooking, onOpenDiscover }: HeroProps) {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   return (
-    <section id="start" suppressHydrationWarning className="relative h-screen w-full overflow-hidden bg-gray-50">
-      {/* Video Background container with suppressHydrationWarning for browser video extensions */}
-      <div suppressHydrationWarning className="absolute inset-0 w-full h-full overflow-hidden">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          suppressHydrationWarning
-          className="w-full h-full object-cover opacity-90"
-        >
-          <source
-            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260328_091828_e240eb17-6edc-4129-ad9d-98678e3fd238.mp4"
-            type="video/mp4"
-          />
-          Your browser does not support HTML5 video.
-        </video>
+    <section id="start" className="relative h-screen w-full overflow-hidden bg-gray-50">
+      {/* Video Background container with client-only mounting to prevent browser extension (e.g. SpeedUpYPSC) hydration errors */}
+      <div className="absolute inset-0 w-full h-full overflow-hidden bg-[#202A36]">
+        {isMounted && (
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover opacity-90 transition-opacity duration-1000"
+          >
+            <source
+              src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260328_091828_e240eb17-6edc-4129-ad9d-98678e3fd238.mp4"
+              type="video/mp4"
+            />
+            Your browser does not support HTML5 video.
+          </video>
+        )}
       </div>
 
       {/* Subtle Overlay to enhance text contrast while keeping cinematic brightness */}
