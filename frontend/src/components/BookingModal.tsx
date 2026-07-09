@@ -6,7 +6,7 @@ import {
   Search, Calendar, Users, ArrowRight, ChevronDown, Clock
 } from "lucide-react";
 import {
-  fetchAllFlights, fetchAllAirports, createBooking, fetchBookingById,
+  fetchAllFlights, fetchAllAirports, createBooking, fetchBookingById, makePayment,
   generateIdempotencyKey, formatTime, formatDate, flightDurationMins, applyTravelDate,
   type Flight, type Airport, type Booking, type FlightSearchParams
 } from "@/lib/api";
@@ -47,6 +47,10 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const [bookingMessage, setBookingMessage] = useState("");
   const [bookingData, setBookingData] = useState<Booking | null>(null);
 
+  // ─── Payment state ───
+  const [paymentStatus, setPaymentStatus] = useState<"IDLE" | "LOADING" | "SUCCESS" | "ERROR">("IDLE");
+  const [paymentMessage, setPaymentMessage] = useState("");
+
   const [step, setStep] = useState<Step>("SEARCH");
 
   // ─── On modal open ───
@@ -58,6 +62,8 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
     setFlightError("");
     setBookingStatus("IDLE");
     setBookingData(null);
+    setPaymentStatus("IDLE");
+    setPaymentMessage("");
     setIdempotencyKey(generateIdempotencyKey());
     loadAirports();
   }, [isOpen]);
@@ -203,6 +209,31 @@ const DEFAULT_AIRPORTS: Airport[] = [
         );
       }
       setStep("ERROR");
+    }
+  };
+
+  const handlePayment = async () => {
+    if (!bookingData) return;
+    setPaymentStatus("LOADING");
+    setPaymentMessage("");
+
+    try {
+      const updatedBooking = await makePayment({
+        bookingId: bookingData.id,
+        userId: bookingData.userId,
+        totalCost: bookingData.totalCost,
+        idempotencyKey: generateIdempotencyKey(),
+        recepientEmail: "akshanshranjan007@gmail.com",
+      });
+      setBookingData(updatedBooking);
+      setPaymentStatus("SUCCESS");
+    } catch (err: any) {
+      setPaymentStatus("ERROR");
+      setPaymentMessage(
+        err?.response?.data?.message ||
+        err?.response?.data?.error?.explanation ||
+        "Payment transaction failed. Ensure Booking & Notification services are running."
+      );
     }
   };
 
@@ -595,9 +626,50 @@ const DEFAULT_AIRPORTS: Airport[] = [
                 </div>
               </div>
 
+              {/* Phase 2: ACID Payment & RabbitMQ Notification Action */}
+              {paymentStatus !== "SUCCESS" ? (
+                <div className="mt-5 p-4 rounded-2xl bg-blue-50/80 border border-blue-200/80 flex flex-col gap-3">
+                  <div className="flex items-center justify-between text-xs font-bold text-blue-900 uppercase tracking-wider">
+                    <span>Phase 2: ACID Payment & Notification</span>
+                    <span className="text-blue-600">Pending Commit</span>
+                  </div>
+                  <p className="text-xs text-blue-800 leading-relaxed">
+                    Execute payment verification (`POST /bookings/payments`) to update status to <strong className="font-semibold text-green-700">BOOKED</strong> and trigger an instant confirmation email via RabbitMQ to:
+                  </p>
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white border border-blue-200 text-sm font-mono font-semibold text-gray-800">
+                    <span>✉️ akshanshranjan007@gmail.com</span>
+                  </div>
+                  {paymentMessage && (
+                    <p className="text-xs text-red-600 font-medium">{paymentMessage}</p>
+                  )}
+                  <button
+                    type="button"
+                    onClick={handlePayment}
+                    disabled={paymentStatus === "LOADING"}
+                    className="w-full py-3.5 rounded-xl bg-[#ff2a2a] hover:bg-red-600 text-white font-bold text-xs uppercase tracking-wider shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer"
+                  >
+                    {paymentStatus === "LOADING" ? (
+                      <><RefreshCw className="w-4 h-4 animate-spin" /> Executing Payment Transaction...</>
+                    ) : (
+                      <><ShieldCheck className="w-4 h-4" /> Pay Now & Dispatch Flight Confirmation Email</>
+                    )}
+                  </button>
+                </div>
+              ) : (
+                <div className="mt-5 p-4 rounded-2xl bg-green-50 border border-green-200 flex flex-col gap-2">
+                  <div className="flex items-center gap-2 text-green-800 font-bold text-sm">
+                    <CheckCircle2 className="w-5 h-5 text-green-600" />
+                    <span>Payment Committed & Email Dispatched!</span>
+                  </div>
+                  <p className="text-xs text-green-700 leading-relaxed">
+                    RabbitMQ (`Notification-Queue`) has processed the event envelope and Nodemailer delivered the flight confirmation ticket directly to <strong className="font-mono underline">akshanshranjan007@gmail.com</strong>.
+                  </p>
+                </div>
+              )}
+
               <div className="flex gap-3 mt-5">
                 <button
-                  onClick={() => { setStep("SEARCH"); setBookingData(null); setBookingStatus("IDLE"); setIdempotencyKey(generateIdempotencyKey()); }}
+                  onClick={() => { setStep("SEARCH"); setBookingData(null); setBookingStatus("IDLE"); setPaymentStatus("IDLE"); setIdempotencyKey(generateIdempotencyKey()); }}
                   className="flex-1 py-3 rounded-xl border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 text-sm flex items-center justify-center gap-2"
                 >
                   <Plane className="w-4 h-4" /> Book Another

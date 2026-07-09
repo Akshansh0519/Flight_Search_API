@@ -105,6 +105,28 @@ export async function fetchBookingById(id: number): Promise<Booking> {
   return res.data.data;
 }
 
+export interface MakePaymentInput {
+  bookingId: number;
+  userId: number;
+  totalCost: number;
+  idempotencyKey: string;
+  recepientEmail?: string;
+}
+
+export async function makePayment(input: MakePaymentInput): Promise<Booking> {
+  const res = await bookingsAPI.post('/bookings/payments', {
+    bookingId: input.bookingId,
+    userId: input.userId,
+    totalCost: input.totalCost,
+    recepientEmail: input.recepientEmail || 'akshanshranjan007@gmail.com'
+  }, {
+    headers: {
+      'x-idempotency-key': input.idempotencyKey
+    }
+  });
+  return res.data.data;
+}
+
 // ──────────────────────── Helpers ────────────────────────
 
 export function generateIdempotencyKey(): string {
