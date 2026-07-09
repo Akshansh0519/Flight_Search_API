@@ -111,6 +111,7 @@ export interface MakePaymentInput {
   totalCost: number;
   idempotencyKey: string;
   recepientEmail?: string;
+  travelDate?: string;
 }
 
 export async function makePayment(input: MakePaymentInput): Promise<Booking> {
@@ -118,7 +119,8 @@ export async function makePayment(input: MakePaymentInput): Promise<Booking> {
     bookingId: input.bookingId,
     userId: input.userId,
     totalCost: input.totalCost,
-    recepientEmail: input.recepientEmail || 'akshanshranjan007@gmail.com'
+    recepientEmail: input.recepientEmail || 'akshanshranjan007@gmail.com',
+    travelDate: input.travelDate
   }, {
     headers: {
       'x-idempotency-key': input.idempotencyKey

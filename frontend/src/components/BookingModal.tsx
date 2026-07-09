@@ -50,6 +50,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   // ─── Payment state ───
   const [paymentStatus, setPaymentStatus] = useState<"IDLE" | "LOADING" | "SUCCESS" | "ERROR">("IDLE");
   const [paymentMessage, setPaymentMessage] = useState("");
+  const [recipientEmail, setRecipientEmail] = useState("akshanshranjan007@gmail.com");
 
   const [step, setStep] = useState<Step>("SEARCH");
 
@@ -64,6 +65,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
     setBookingData(null);
     setPaymentStatus("IDLE");
     setPaymentMessage("");
+    setRecipientEmail("akshanshranjan007@gmail.com");
     setIdempotencyKey(generateIdempotencyKey());
     loadAirports();
   }, [isOpen]);
@@ -223,7 +225,8 @@ const DEFAULT_AIRPORTS: Airport[] = [
         userId: bookingData.userId,
         totalCost: bookingData.totalCost,
         idempotencyKey: generateIdempotencyKey(),
-        recepientEmail: "akshanshranjan007@gmail.com",
+        recepientEmail: recipientEmail || "akshanshranjan007@gmail.com",
+        travelDate: departureDate || new Date().toISOString().split("T")[0],
       });
       setBookingData(updatedBooking);
       setPaymentStatus("SUCCESS");
@@ -634,10 +637,25 @@ const DEFAULT_AIRPORTS: Airport[] = [
                     <span className="text-blue-600">Pending Commit</span>
                   </div>
                   <p className="text-xs text-blue-800 leading-relaxed">
-                    Execute payment verification (`POST /bookings/payments`) to update status to <strong className="font-semibold text-green-700">BOOKED</strong> and trigger an instant confirmation email via RabbitMQ to:
+                    Execute payment verification (`POST /bookings/payments`) to update status to <strong className="font-semibold text-green-700">BOOKED</strong> and trigger an instant confirmation email via RabbitMQ.
                   </p>
-                  <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white border border-blue-200 text-sm font-mono font-semibold text-gray-800">
-                    <span>✉️ akshanshranjan007@gmail.com</span>
+                  <div>
+                    <label className="block text-[11px] font-semibold uppercase tracking-wider text-blue-900 mb-1">
+                      Recipient Email Address for E-Ticket Delivery
+                    </label>
+                    <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white border border-blue-200 focus-within:ring-2 focus-within:ring-blue-500/30">
+                      <span className="text-gray-400 text-xs">✉️</span>
+                      <input
+                        type="email"
+                        value={recipientEmail}
+                        onChange={(e) => setRecipientEmail(e.target.value)}
+                        placeholder="e.g. akshanshranjan007@gmail.com"
+                        className="w-full text-sm font-mono font-semibold text-gray-900 bg-transparent focus:outline-none"
+                      />
+                    </div>
+                    <p className="text-[11px] text-blue-700 mt-1">
+                      Default: <span className="font-mono underline">akshanshranjan007@gmail.com</span> — You can edit this above to test real-time ticket delivery!
+                    </p>
                   </div>
                   {paymentMessage && (
                     <p className="text-xs text-red-600 font-medium">{paymentMessage}</p>
@@ -662,7 +680,7 @@ const DEFAULT_AIRPORTS: Airport[] = [
                     <span>Payment Committed & Email Dispatched!</span>
                   </div>
                   <p className="text-xs text-green-700 leading-relaxed">
-                    RabbitMQ (`Notification-Queue`) has processed the event envelope and Nodemailer delivered the flight confirmation ticket directly to <strong className="font-mono underline">akshanshranjan007@gmail.com</strong>.
+                    RabbitMQ (`Notification-Queue`) has processed the event envelope and Nodemailer delivered the detailed E-ticket directly to <strong className="font-mono underline">{recipientEmail || "akshanshranjan007@gmail.com"}</strong>.
                   </p>
                 </div>
               )}
