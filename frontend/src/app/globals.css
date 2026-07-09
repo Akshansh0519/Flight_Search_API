@@ -9,6 +9,32 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter), sans-serif;
+  --font-display: 'Impact', 'Arial Black', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  
+  /* Custom Color Tokens from Design System */
+  --color-brand-crimson: #ff2a2a;
+  --color-surface-deep: #0a0a0a;
+  --color-surface-card: #121212;
+  --color-border-subtle: #27272a;
+  --color-border-highlight: #3f3f46;
+  --color-electric-cyan: #00f0ff;
+  --color-neon-emerald: #10b981;
+  --color-ai-violet: #8b5cf6;
+
+  /* Custom Animations & Keyframes */
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-shine: shine 1.5s infinite;
+  --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+}
+
+@keyframes shine {
+  100% { left: 125%; }
 }
 
 body {

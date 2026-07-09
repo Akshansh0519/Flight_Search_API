@@ -32,6 +32,9 @@ export default function Navbar({ onOpenBooking, onOpenDiscover }: NavbarProps) {
           <a href="#start" className="hover:text-gray-600 transition-colors">
             Start
           </a>
+          <a href="#architecture" className="hover:text-gray-600 transition-colors">
+            Architecture
+          </a>
           <button onClick={onOpenDiscover} className="hover:text-gray-600 transition-colors">
             Destinations & Routes
           </button>
@@ -75,6 +78,13 @@ export default function Navbar({ onOpenBooking, onOpenDiscover }: NavbarProps) {
             className="text-gray-900 font-medium hover:text-gray-600 transition-colors py-1"
           >
             Start
+          </a>
+          <a
+            href="#architecture"
+            onClick={() => setMobileMenuOpen(false)}
+            className="text-gray-900 font-medium hover:text-gray-600 transition-colors py-1"
+          >
+            Architecture & Microservices
           </a>
           <button
             onClick={() => { setMobileMenuOpen(false); onOpenDiscover(); }}

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import ArchitectureHub from "@/components/ArchitectureHub";
 import BookingModal from "@/components/BookingModal";
 import DiscoverModal from "@/components/DiscoverModal";
 
@@ -20,6 +21,12 @@ export default function Home() {
 
       {/* Full-screen Hero Section */}
       <Hero
+        onOpenBooking={() => setBookingModalOpen(true)}
+        onOpenDiscover={() => setDiscoverModalOpen(true)}
+      />
+
+      {/* Interactive Microservice & Architecture Hub (from DESIGN_SYSTEM_AND_UI_GUIDE.md) */}
+      <ArchitectureHub
         onOpenBooking={() => setBookingModalOpen(true)}
         onOpenDiscover={() => setDiscoverModalOpen(true)}
       />
