@@ -11,6 +11,7 @@ import AuthModal from "@/components/AuthModal";
 export default function Home() {
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [discoverModalOpen, setDiscoverModalOpen] = useState(false);
+  const [discoverModalTab, setDiscoverModalTab] = useState<"EXPLORE" | "FAQ">("EXPLORE");
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
 
@@ -30,7 +31,8 @@ export default function Home() {
       {/* Navigation Bar */}
       <Navbar
         onOpenBooking={() => setBookingModalOpen(true)}
-        onOpenDiscover={() => setDiscoverModalOpen(true)}
+        onOpenDiscover={() => { setDiscoverModalTab("EXPLORE"); setDiscoverModalOpen(true); }}
+        onOpenFAQ={() => { setDiscoverModalTab("FAQ"); setDiscoverModalOpen(true); }}
         onOpenAuth={() => setAuthModalOpen(true)}
         userEmailProp={userEmail}
         onLogoutProp={() => {
@@ -46,13 +48,13 @@ export default function Home() {
       {/* Full-screen Hero Section */}
       <Hero
         onOpenBooking={() => setBookingModalOpen(true)}
-        onOpenDiscover={() => setDiscoverModalOpen(true)}
+        onOpenDiscover={() => { setDiscoverModalTab("EXPLORE"); setDiscoverModalOpen(true); }}
       />
 
       {/* Interactive Microservice & Architecture Hub (from DESIGN_SYSTEM_AND_UI_GUIDE.md) */}
       <ArchitectureHub
         onOpenBooking={() => setBookingModalOpen(true)}
-        onOpenDiscover={() => setDiscoverModalOpen(true)}
+        onOpenDiscover={() => { setDiscoverModalTab("EXPLORE"); setDiscoverModalOpen(true); }}
       />
 
       {/* Interactive Modals */}
@@ -74,6 +76,7 @@ export default function Home() {
         isOpen={discoverModalOpen}
         onClose={() => setDiscoverModalOpen(false)}
         onOpenBooking={() => setBookingModalOpen(true)}
+        defaultTab={discoverModalTab}
       />
     </main>
   );

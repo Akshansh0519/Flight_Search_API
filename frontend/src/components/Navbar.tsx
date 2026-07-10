@@ -7,11 +7,12 @@ interface NavbarProps {
   onOpenBooking: () => void;
   onOpenDiscover: () => void;
   onOpenAuth?: () => void;
+  onOpenFAQ?: () => void;
   userEmailProp?: string | null;
   onLogoutProp?: () => void;
 }
 
-export default function Navbar({ onOpenBooking, onOpenDiscover, onOpenAuth, userEmailProp, onLogoutProp }: NavbarProps) {
+export default function Navbar({ onOpenBooking, onOpenDiscover, onOpenAuth, onOpenFAQ, userEmailProp, onLogoutProp }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(userEmailProp || null);
 
@@ -61,7 +62,7 @@ export default function Navbar({ onOpenBooking, onOpenDiscover, onOpenAuth, user
         </div>
 
         {/* Desktop Menu */}
-        <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-900">
+        <nav className="hidden lg:flex items-center gap-4 xl:gap-6 text-xs xl:text-sm font-medium text-gray-900 shrink-0">
           <a href="#start" className="hover:text-gray-600 transition-colors">
             Start
           </a>
@@ -77,22 +78,22 @@ export default function Navbar({ onOpenBooking, onOpenDiscover, onOpenAuth, user
           <button onClick={onOpenDiscover} className="hover:text-gray-600 transition-colors">
             Benefits
           </button>
-          <button onClick={onOpenDiscover} className="hover:text-gray-600 transition-colors">
+          <button onClick={onOpenFAQ || onOpenDiscover} className="hover:text-gray-600 transition-colors">
             FAQ
           </button>
         </nav>
 
         {/* Desktop CTA */}
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden lg:flex items-center gap-2.5 shrink-0">
           {userEmail ? (
-            <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200/80 rounded-full px-3.5 py-1.5 shadow-sm animate-in fade-in duration-300">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="text-emerald-950 font-bold text-xs">
+            <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200/80 rounded-full px-3 py-1 shadow-sm shrink-0 animate-in fade-in duration-300">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0 animate-pulse"></span>
+              <span className="text-emerald-950 font-bold text-xs max-w-[85px] xl:max-w-[135px] truncate" title={userEmail}>
                 👤 {userEmail.split('@')[0]}
               </span>
               <button
                 onClick={handleLogout}
-                className="ml-1 px-2 py-0.5 rounded-md bg-red-100 hover:bg-red-200 text-red-700 font-extrabold text-[10px] uppercase tracking-wider transition-colors"
+                className="ml-1 px-2 py-0.5 rounded-md bg-red-100 hover:bg-red-200 text-red-700 font-extrabold text-[10px] uppercase tracking-wider transition-colors shrink-0"
                 title="Sign Out"
               >
                 Sign Out
@@ -101,14 +102,14 @@ export default function Navbar({ onOpenBooking, onOpenDiscover, onOpenAuth, user
           ) : (
             <button
               onClick={onOpenAuth}
-              className="px-4 py-2 rounded-full border border-[#202A36]/30 text-[#202A36] bg-white/80 hover:bg-[#202A36] hover:text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm"
+              className="px-4 py-2 rounded-full border border-[#202A36]/30 text-[#202A36] bg-white/80 hover:bg-[#202A36] hover:text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm shrink-0"
             >
               🔐 Sign In / Sign Up
             </button>
           )}
           <button
             onClick={onOpenBooking}
-            className="px-5 py-2.5 rounded-full bg-[#202A36] text-white text-sm font-medium hover:bg-[#1a2229] shadow-md transition-all duration-300 hover:-translate-y-0.5"
+            className="px-5 py-2.5 rounded-full bg-[#202A36] text-white text-sm font-medium hover:bg-[#1a2229] shadow-md transition-all duration-300 hover:-translate-y-0.5 shrink-0"
           >
             Book Flight
           </button>
@@ -117,7 +118,7 @@ export default function Navbar({ onOpenBooking, onOpenDiscover, onOpenAuth, user
         {/* Mobile Menu Toggle */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden p-2 rounded-lg bg-white/80 backdrop-blur-md text-gray-900 hover:bg-white transition-colors shadow-sm"
+          className="lg:hidden p-2 rounded-lg bg-white/80 backdrop-blur-md text-gray-900 hover:bg-white transition-colors shadow-sm shrink-0"
           aria-label="Toggle Menu"
         >
           {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -126,7 +127,7 @@ export default function Navbar({ onOpenBooking, onOpenDiscover, onOpenAuth, user
 
       {/* Mobile Dropdown Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden mx-6 mt-2 p-6 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100 flex flex-col gap-4 animate-in fade-in slide-in-from-top-4 duration-200">
+        <div className="lg:hidden mx-6 mt-2 p-6 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100 flex flex-col gap-4 animate-in fade-in slide-in-from-top-4 duration-200">
           <a
             href="#start"
             onClick={() => setMobileMenuOpen(false)}
@@ -154,7 +155,7 @@ export default function Navbar({ onOpenBooking, onOpenDiscover, onOpenAuth, user
             Flight Schedule & Booking
           </button>
           <button
-            onClick={() => { setMobileMenuOpen(false); onOpenDiscover(); }}
+            onClick={() => { setMobileMenuOpen(false); (onOpenFAQ || onOpenDiscover)(); }}
             className="text-left text-gray-900 font-medium hover:text-gray-600 transition-colors py-1"
           >
             Benefits & FAQ

@@ -8,17 +8,20 @@ interface DiscoverModalProps {
   isOpen: boolean;
   onClose: () => void;
   onOpenBooking: () => void;
+  defaultTab?: "EXPLORE" | "FAQ";
 }
 
-export default function DiscoverModal({ isOpen, onClose, onOpenBooking }: DiscoverModalProps) {
+export default function DiscoverModal({ isOpen, onClose, onOpenBooking, defaultTab = "EXPLORE" }: DiscoverModalProps) {
   const [flights, setFlights] = useState<Flight[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [activeTab, setActiveTab] = useState<"EXPLORE" | "FAQ">(defaultTab);
 
   useEffect(() => {
     if (!isOpen) return;
+    setActiveTab(defaultTab);
     loadFlights();
-  }, [isOpen]);
+  }, [isOpen, defaultTab]);
 
   const loadFlights = async () => {
     setLoading(true);
@@ -37,29 +40,52 @@ export default function DiscoverModal({ isOpen, onClose, onOpenBooking }: Discov
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100 flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-3xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100 flex flex-col max-h-[90vh]">
 
         {/* Header */}
-        <div className="bg-[#202A36] text-white p-6 flex items-center justify-between shrink-0">
-          <div>
-            <h3 className="text-xl font-bold">Explore SkyElite Flights</h3>
-            <p className="text-xs text-gray-300">Global Airline Reservations · Microservice Architecture</p>
+        <div className="bg-[#202A36] text-white p-6 flex flex-col gap-4 shrink-0">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-xl font-bold">SkyElite Architecture & FAQ Hub</h3>
+              <p className="text-xs text-gray-300">Global Airline Reservations · 4-Microservice Ecosystem</p>
+            </div>
+            <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
+              <X className="w-4 h-4 text-white" />
+            </button>
           </div>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
-            <X className="w-4 h-4 text-white" />
-          </button>
+
+          {/* Tab Switcher */}
+          <div className="flex rounded-xl bg-white/10 p-1">
+            <button
+              onClick={() => setActiveTab("EXPLORE")}
+              className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
+                activeTab === "EXPLORE" ? "bg-white text-[#202A36] shadow-sm" : "text-gray-300 hover:text-white"
+              }`}
+            >
+              ◈ Explore & Architecture
+            </button>
+            <button
+              onClick={() => setActiveTab("FAQ")}
+              className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
+                activeTab === "FAQ" ? "bg-white text-[#202A36] shadow-sm" : "text-gray-300 hover:text-white"
+              }`}
+            >
+              ❓ Frequently Asked Questions (FAQ)
+            </button>
+          </div>
         </div>
 
         {/* Body */}
         <div className="p-6 overflow-y-auto flex-1 space-y-6 text-gray-700">
-
-          {/* Why SkyElite */}
-          <div>
-            <h4 className="text-base font-bold text-gray-900 mb-2">Reliable, Real-Time Flight Booking</h4>
-            <p className="text-sm leading-relaxed text-gray-600">
-              SkyElite provides seamless commercial airline flight booking by combining a real-time Flight Catalog microservice with a robust Booking Engine. Every seat reservation is executed with full database transaction safety, zero double-booking risk.
-            </p>
-          </div>
+          {activeTab === "EXPLORE" ? (
+            <>
+              {/* Why SkyElite */}
+              <div>
+                <h4 className="text-base font-bold text-gray-900 mb-2">Reliable, Real-Time Flight Booking</h4>
+                <p className="text-sm leading-relaxed text-gray-600">
+                  SkyElite provides seamless commercial airline flight booking by combining a real-time Flight Catalog microservice with a robust Booking Engine. Every seat reservation is executed with full database transaction safety, zero double-booking risk.
+                </p>
+              </div>
 
           {/* Feature Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -154,8 +180,48 @@ export default function DiscoverModal({ isOpen, onClose, onOpenBooking }: Discov
                   );
                 })}
               </div>
-            )}
-          </div>
+            </>
+          ) : (
+            <div className="space-y-4 animate-in fade-in duration-300">
+              <div className="p-4 rounded-2xl bg-[#202A36]/5 border border-[#202A36]/15 mb-4">
+                <h4 className="font-bold text-gray-900 text-sm flex items-center gap-2">
+                  <Shield className="w-4 h-4 text-[#202A36]" />
+                  Latest System Updates — 4 Microservice & JWT Engineering
+                </h4>
+                <p className="text-xs text-gray-600 mt-1">
+                  Answers to critical architectural questions regarding our newly updated dual-database, JWT API Gateway, and RabbitMQ event pipeline.
+                </p>
+              </div>
+
+              {[
+                {
+                  q: "1. How does the central API Gateway Service (Port 5000) handle JWT Security?",
+                  a: "All client requests route through our Reverse Proxy Gateway on Port 5000. When you Sign In or Create an Account, our custom JWT Authentication Middleware verifies and issues signed tokens (`Authorization: Bearer <token>`), decoupling authentication from downstream flight/booking domains."
+                },
+                {
+                  q: "2. Why are Flights (Port 3000) and Bookings (Port 4000) separate microservices?",
+                  a: "Separation of concerns allows independent scaling! The Flight Search API (`Flights_Booking_Service`) optimizes for read-heavy query performance and route discovery, while the Booking Service (`Booking_Service`) specializes in write-heavy ACID transaction processing and payment idempotency."
+                },
+                {
+                  q: "3. How does ACID Row-Locking (`SELECT ... FOR UPDATE`) prevent double bookings?",
+                  a: "When multiple passengers book the last seat simultaneously, `Booking_Service` executes a synchronous Axios check inside a strict MySQL database transaction (`sequelize.transaction()`). The row lock guarantees atomic seat decrements (`totalSeats = totalSeats - noOfSeats`) without race conditions."
+                },
+                {
+                  q: "4. How does the asynchronous RabbitMQ Notification Service (Port 3002) work?",
+                  a: "To keep booking confirmation responses sub-50ms, email generation is fully asynchronous. Once a booking is committed, an event is published to `NOTIFICATION_QUEUE` (`amqps://`). The `Notification-Service-Flights` worker consumes the payload, audits it in MySQL, and dispatches your HTML E-Ticket via Nodemailer."
+                },
+                {
+                  q: "5. What happens if network timeouts occur during checkout (Idempotency Key)?",
+                  a: "Every booking request includes an `Idempotency-Key` header stored inside our `IdempotencyRepository`. If a client retries after a network hiccup or double-clicks 'Confirm & Pay', the server immediately returns the cached transaction result (`200 OK`) instead of creating a duplicate reservation or double charge."
+                }
+              ].map((faq, idx) => (
+                <div key={idx} className="p-4 rounded-2xl bg-gray-50 border border-gray-150 flex flex-col gap-2 hover:border-gray-300 transition-colors">
+                  <h5 className="font-bold text-gray-900 text-sm">{faq.q}</h5>
+                  <p className="text-xs leading-relaxed text-gray-600">{faq.a}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Footer */}
