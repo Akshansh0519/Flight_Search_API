@@ -12,6 +12,18 @@ export default function Home() {
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [discoverModalOpen, setDiscoverModalOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      setUserEmail(localStorage.getItem("skyelite_user_email"));
+      const handleAuthChange = () => {
+        setUserEmail(localStorage.getItem("skyelite_user_email"));
+      };
+      window.addEventListener("auth_change", handleAuthChange);
+      return () => window.removeEventListener("auth_change", handleAuthChange);
+    }
+  }, []);
 
   return (
     <main className="relative min-h-screen w-full flex flex-col bg-gray-50 overflow-hidden">
@@ -20,6 +32,15 @@ export default function Home() {
         onOpenBooking={() => setBookingModalOpen(true)}
         onOpenDiscover={() => setDiscoverModalOpen(true)}
         onOpenAuth={() => setAuthModalOpen(true)}
+        userEmailProp={userEmail}
+        onLogoutProp={() => {
+          if (typeof window !== "undefined") {
+            localStorage.removeItem("skyelite_user_email");
+            localStorage.removeItem("jwt_token");
+            setUserEmail(null);
+            window.dispatchEvent(new Event("auth_change"));
+          }
+        }}
       />
 
       {/* Full-screen Hero Section */}
@@ -39,7 +60,8 @@ export default function Home() {
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
         onLoginSuccess={(email) => {
-          console.log("Logged in:", email);
+          setUserEmail(email);
+          window.dispatchEvent(new Event("auth_change"));
         }}
       />
 

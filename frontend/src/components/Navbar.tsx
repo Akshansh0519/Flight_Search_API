@@ -7,18 +7,42 @@ interface NavbarProps {
   onOpenBooking: () => void;
   onOpenDiscover: () => void;
   onOpenAuth?: () => void;
+  userEmailProp?: string | null;
+  onLogoutProp?: () => void;
 }
 
-export default function Navbar({ onOpenBooking, onOpenDiscover, onOpenAuth }: NavbarProps) {
+export default function Navbar({ onOpenBooking, onOpenDiscover, onOpenAuth, userEmailProp, onLogoutProp }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(userEmailProp || null);
 
   React.useEffect(() => {
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("skyelite_user_email");
-      if (stored) setUserEmail(stored);
-    }
+    const checkAuth = () => {
+      if (typeof window !== "undefined") {
+        const stored = localStorage.getItem("skyelite_user_email");
+        setUserEmail(stored);
+      }
+    };
+    checkAuth();
+    window.addEventListener("auth_change", checkAuth);
+    return () => window.removeEventListener("auth_change", checkAuth);
   }, []);
+
+  React.useEffect(() => {
+    if (userEmailProp !== undefined) {
+      setUserEmail(userEmailProp);
+    }
+  }, [userEmailProp]);
+
+  const handleLogout = () => {
+    if (onLogoutProp) {
+      onLogoutProp();
+    } else if (typeof window !== "undefined") {
+      localStorage.removeItem("skyelite_user_email");
+      localStorage.removeItem("jwt_token");
+      setUserEmail(null);
+      window.dispatchEvent(new Event("auth_change"));
+    }
+  };
 
   return (
     <header className="absolute top-0 left-0 right-0 z-40 w-full">
@@ -60,12 +84,28 @@ export default function Navbar({ onOpenBooking, onOpenDiscover, onOpenAuth }: Na
 
         {/* Desktop CTA */}
         <div className="hidden md:flex items-center gap-3">
-          <button
-            onClick={onOpenAuth}
-            className="px-4 py-2 rounded-full border border-[#202A36]/30 text-[#202A36] text-xs font-bold hover:bg-[#202A36]/5 transition-all flex items-center gap-1.5"
-          >
-            {userEmail ? `👤 ${userEmail.split('@')[0]}` : "🔐 Sign In / Sign Up"}
-          </button>
+          {userEmail ? (
+            <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200/80 rounded-full px-3.5 py-1.5 shadow-sm animate-in fade-in duration-300">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="text-emerald-950 font-bold text-xs">
+                👤 {userEmail.split('@')[0]}
+              </span>
+              <button
+                onClick={handleLogout}
+                className="ml-1 px-2 py-0.5 rounded-md bg-red-100 hover:bg-red-200 text-red-700 font-extrabold text-[10px] uppercase tracking-wider transition-colors"
+                title="Sign Out"
+              >
+                Sign Out
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={onOpenAuth}
+              className="px-4 py-2 rounded-full border border-[#202A36]/30 text-[#202A36] bg-white/80 hover:bg-[#202A36] hover:text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm"
+            >
+              🔐 Sign In / Sign Up
+            </button>
+          )}
           <button
             onClick={onOpenBooking}
             className="px-5 py-2.5 rounded-full bg-[#202A36] text-white text-sm font-medium hover:bg-[#1a2229] shadow-md transition-all duration-300 hover:-translate-y-0.5"
@@ -120,6 +160,29 @@ export default function Navbar({ onOpenBooking, onOpenDiscover, onOpenAuth }: Na
             Benefits & FAQ
           </button>
           <div className="pt-4 border-t border-gray-100 flex flex-col gap-3">
+            {userEmail ? (
+              <div className="flex items-center justify-between p-3 bg-emerald-50 rounded-xl border border-emerald-200/80">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span className="text-emerald-950 font-bold text-sm">
+                    👤 {userEmail.split('@')[0]}
+                  </span>
+                </div>
+                <button
+                  onClick={() => { setMobileMenuOpen(false); handleLogout(); }}
+                  className="px-3 py-1 rounded-lg bg-red-100 hover:bg-red-200 text-red-700 font-bold text-xs"
+                >
+                  Sign Out
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => { setMobileMenuOpen(false); if (onOpenAuth) onOpenAuth(); }}
+                className="w-full py-3 rounded-xl border-2 border-[#202A36] text-[#202A36] font-bold text-center shadow-sm"
+              >
+                🔐 Sign In / Sign Up
+              </button>
+            )}
             <button
               onClick={() => { setMobileMenuOpen(false); onOpenBooking(); }}
               className="w-full py-3 rounded-xl bg-[#202A36] text-white text-center font-medium shadow-md"

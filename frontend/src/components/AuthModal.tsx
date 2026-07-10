@@ -41,6 +41,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }: AuthModal
         const { token } = await signinUser(email, password);
         setAuthToken(token);
         localStorage.setItem("skyelite_user_email", email);
+        window.dispatchEvent(new Event("auth_change"));
         
         setTimeout(() => {
           onLoginSuccess(email);
@@ -51,6 +52,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }: AuthModal
         const { token } = await signinUser(email, password);
         setAuthToken(token);
         localStorage.setItem("skyelite_user_email", email);
+        window.dispatchEvent(new Event("auth_change"));
         
         setSuccessMsg("Signed in successfully via JWT!");
         setTimeout(() => {
