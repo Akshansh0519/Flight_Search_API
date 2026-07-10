@@ -78,7 +78,7 @@ export default function DiscoverModal({ isOpen, onClose, onOpenBooking, defaultT
         {/* Body */}
         <div className="p-6 overflow-y-auto flex-1 space-y-6 text-gray-700">
           {activeTab === "EXPLORE" ? (
-            <>
+            <div className="space-y-6">
               {/* Why SkyElite */}
               <div>
                 <h4 className="text-base font-bold text-gray-900 mb-2">Reliable, Real-Time Flight Booking</h4>
@@ -87,100 +87,102 @@ export default function DiscoverModal({ isOpen, onClose, onOpenBooking, defaultT
                 </p>
               </div>
 
-          {/* Feature Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100 flex flex-col gap-2">
-              <div className="w-10 h-10 rounded-xl bg-[#202A36]/10 text-[#202A36] flex items-center justify-center">
-                <Cpu className="w-5 h-5" />
-              </div>
-              <h5 className="font-bold text-gray-900 text-sm">Dual-Microservice Engine</h5>
-              <p className="text-xs text-gray-600">Axios-bridged Flight Catalog API (Port 3000) and Booking Engine (Port 4000) with eager-loaded association data.</p>
-            </div>
-            <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100 flex flex-col gap-2">
-              <div className="w-10 h-10 rounded-xl bg-green-100 text-green-700 flex items-center justify-center">
-                <Shield className="w-5 h-5" />
-              </div>
-              <h5 className="font-bold text-gray-900 text-sm">ACID Row-Locking</h5>
-              <p className="text-xs text-gray-600">MySQL SELECT…FOR UPDATE prevents overbooking during concurrent bookings at peak load.</p>
-            </div>
-          </div>
-
-          {/* Key Benefits */}
-          <div>
-            <h4 className="text-sm font-bold uppercase tracking-wider text-gray-400 mb-3">Platform Benefits</h4>
-            <div className="space-y-2 text-sm">
-              {[
-                "Idempotency keys prevent duplicate charges on retry",
-                "Real-time seat inventory decrement in atomic transactions",
-                "Airport & route-based flight search with date filtering",
-                "Instant booking confirmation with receipt generation",
-              ].map((b, i) => (
-                <div key={i} className="flex items-start gap-2.5">
-                  <Check className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />
-                  <span className="text-gray-700">{b}</span>
+              {/* Feature Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100 flex flex-col gap-2">
+                  <div className="w-10 h-10 rounded-xl bg-[#202A36]/10 text-[#202A36] flex items-center justify-center">
+                    <Cpu className="w-5 h-5" />
+                  </div>
+                  <h5 className="font-bold text-gray-900 text-sm">Dual-Microservice Engine</h5>
+                  <p className="text-xs text-gray-600">Axios-bridged Flight Catalog API (Port 3000) and Booking Engine (Port 4000) with eager-loaded association data.</p>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Live Flights Preview */}
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <h4 className="text-sm font-bold uppercase tracking-wider text-gray-400">Available Flights (Live)</h4>
-              <button onClick={loadFlights} className="text-xs text-[#202A36] hover:underline flex items-center gap-1">
-                <RefreshCw className="w-3 h-3" /> Refresh
-              </button>
-            </div>
-
-            {loading && (
-              <div className="flex items-center justify-center py-8 gap-3 text-gray-500">
-                <RefreshCw className="w-4 h-4 animate-spin" />
-                <span className="text-sm">Loading from Flight Service...</span>
+                <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100 flex flex-col gap-2">
+                  <div className="w-10 h-10 rounded-xl bg-green-100 text-green-700 flex items-center justify-center">
+                    <Shield className="w-5 h-5" />
+                  </div>
+                  <h5 className="font-bold text-gray-900 text-sm">ACID Row-Locking</h5>
+                  <p className="text-xs text-gray-600">MySQL SELECT…FOR UPDATE prevents overbooking during concurrent bookings at peak load.</p>
+                </div>
               </div>
-            )}
 
-            {!loading && error && (
-              <div className="flex items-start gap-2 p-3 rounded-xl bg-red-50 border border-red-100 text-xs text-red-700">
-                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                <span>{error}</span>
-              </div>
-            )}
-
-            {!loading && !error && flights.length === 0 && (
-              <p className="text-sm text-gray-500 text-center py-4">No flights found in the database yet.</p>
-            )}
-
-            {!loading && flights.length > 0 && (
-              <div className="space-y-2">
-                {flights.map(flight => {
-                  const durationMins = flightDurationMins(flight.departureTime, flight.arrivalTime);
-                  const hours = Math.floor(durationMins / 60);
-                  const mins = durationMins % 60;
-                  return (
-                    <div key={flight.id} className="flex items-center justify-between p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:border-gray-300 transition-colors">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-[#202A36]/10 text-[#202A36] flex items-center justify-center">
-                          <Plane className="w-4 h-4 transform -rotate-45" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-bold text-gray-900">
-                            {flight.departureAirportId} → {flight.arrivalAirportId}
-                          </p>
-                          <p className="text-xs text-gray-500">{flight.flightNumber} · {hours}h {mins}m</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="text-right">
-                          <p className="text-sm font-bold text-[#202A36]">₹{flight.price.toLocaleString()}</p>
-                          <p className="text-xs text-gray-400 flex items-center gap-1"><Users className="w-3 h-3" />{flight.totalSeats} left</p>
-                        </div>
-                        <ChevronRight className="w-4 h-4 text-gray-400" />
-                      </div>
+              {/* Key Benefits */}
+              <div>
+                <h4 className="text-sm font-bold uppercase tracking-wider text-gray-400 mb-3">Platform Benefits</h4>
+                <div className="space-y-2 text-sm">
+                  {[
+                    "Idempotency keys prevent duplicate charges on retry",
+                    "Real-time seat inventory decrement in atomic transactions",
+                    "Airport & route-based flight search with date filtering",
+                    "Instant booking confirmation with receipt generation",
+                  ].map((b, i) => (
+                    <div key={i} className="flex items-start gap-2.5">
+                      <Check className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />
+                      <span className="text-gray-700">{b}</span>
                     </div>
-                  );
-                })}
+                  ))}
+                </div>
               </div>
-            </>
+
+              {/* Live Flights Preview */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-sm font-bold uppercase tracking-wider text-gray-400">Available Flights (Live)</h4>
+                  <button onClick={loadFlights} className="text-xs text-[#202A36] hover:underline flex items-center gap-1">
+                    <RefreshCw className="w-3 h-3" /> Refresh
+                  </button>
+                </div>
+
+                {loading && (
+                  <div className="flex items-center justify-center py-8 gap-3 text-gray-500">
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <span className="text-sm">Loading from Flight Service...</span>
+                  </div>
+                )}
+
+                {!loading && error && (
+                  <div className="flex items-start gap-2 p-3 rounded-xl bg-red-50 border border-red-100 text-xs text-red-700">
+                    <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                    <span>{error}</span>
+                  </div>
+                )}
+
+                {!loading && !error && flights.length === 0 && (
+                  <p className="text-sm text-gray-500 text-center py-4">No flights found in the database yet.</p>
+                )}
+
+                {!loading && flights.length > 0 && (
+                  <div className="space-y-2">
+                    {flights.map(flight => {
+                      const durationMins = flightDurationMins(flight.departureTime, flight.arrivalTime);
+                      const hours = Math.floor(durationMins / 60);
+                      const mins = durationMins % 60;
+                      return (
+                        <div key={flight.id} className="flex items-center justify-between p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:border-gray-300 transition-colors">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-lg bg-[#202A36]/10 text-[#202A36] flex items-center justify-center">
+                              <Plane className="w-4 h-4 transform -rotate-45" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-bold text-gray-900">
+                                {flight.departureAirportId} → {flight.arrivalAirportId}
+                              </p>
+                              <p className="text-xs text-gray-500">{flight.flightNumber} · {hours}h {mins}m</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div className="text-right">
+                              <p className="text-sm font-bold text-[#202A36]">₹{flight.price.toLocaleString()}</p>
+                              <p className="text-xs text-gray-400 flex items-center gap-1"><Users className="w-3 h-3" />{flight.totalSeats} left</p>
+                            </div>
+                            <ChevronRight className="w-4 h-4 text-gray-400" />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
           ) : (
             <div className="space-y-4 animate-in fade-in duration-300">
               <div className="p-4 rounded-2xl bg-[#202A36]/5 border border-[#202A36]/15 mb-4">
