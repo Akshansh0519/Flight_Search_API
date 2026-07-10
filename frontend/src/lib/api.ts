@@ -1,10 +1,65 @@
 import axios from 'axios';
 
-// Flights Service → proxied to localhost:3000
+// All Services → proxied through API Gateway Service (localhost:5000)
 const flightsAPI = axios.create({ baseURL: '/api/v1' });
-
-// Booking Service → proxied to localhost:4000
 const bookingsAPI = axios.create({ baseURL: '/api/v1' });
+const authAPI = axios.create({ baseURL: '/api/v1' });
+
+// Helper to get token from localStorage safely in browser
+export function getAuthToken(): string | null {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('skyelite_jwt_token');
+  }
+  return null;
+}
+
+export function setAuthToken(token: string): void {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('skyelite_jwt_token', token);
+  }
+}
+
+export function removeAuthToken(): void {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('skyelite_jwt_token');
+    localStorage.removeItem('skyelite_user_email');
+  }
+}
+
+// Automatically inject JWT token into all requests sent through API Gateway
+[flightsAPI, bookingsAPI, authAPI].forEach((client) => {
+  client.interceptors.request.use((config) => {
+    const token = getAuthToken();
+    if (token && config.headers) {
+      config.headers['x-access-token'] = token;
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+  });
+});
+
+// ──────────────────────── Auth & JWT Queries ────────────────────────
+
+export interface AuthUserResponse {
+  success: boolean;
+  data: any;
+  message: string;
+}
+
+export async function signupUser(email: string, password: string): Promise<AuthUserResponse> {
+  const res = await authAPI.post('/user/signup', { email, password });
+  return res.data;
+}
+
+export async function signinUser(email: string, password: string): Promise<{ token: string }> {
+  const res = await authAPI.post('/user/signin', { email, password });
+  return res.data.data;
+}
+
+export async function verifyAuthToken(): Promise<any> {
+  const res = await authAPI.get('/info');
+  return res.data;
+}
 
 // ──────────────────────── Types ────────────────────────
 
