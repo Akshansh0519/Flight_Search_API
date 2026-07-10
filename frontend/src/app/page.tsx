@@ -6,10 +6,12 @@ import Hero from "@/components/Hero";
 import ArchitectureHub from "@/components/ArchitectureHub";
 import BookingModal from "@/components/BookingModal";
 import DiscoverModal from "@/components/DiscoverModal";
+import AuthModal from "@/components/AuthModal";
 
 export default function Home() {
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [discoverModalOpen, setDiscoverModalOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
 
   return (
     <main className="relative min-h-screen w-full flex flex-col bg-gray-50 overflow-hidden">
@@ -17,6 +19,7 @@ export default function Home() {
       <Navbar
         onOpenBooking={() => setBookingModalOpen(true)}
         onOpenDiscover={() => setDiscoverModalOpen(true)}
+        onOpenAuth={() => setAuthModalOpen(true)}
       />
 
       {/* Full-screen Hero Section */}
@@ -32,6 +35,14 @@ export default function Home() {
       />
 
       {/* Interactive Modals */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        onLoginSuccess={(email) => {
+          console.log("Logged in:", email);
+        }}
+      />
+
       <BookingModal
         isOpen={bookingModalOpen}
         onClose={() => setBookingModalOpen(false)}

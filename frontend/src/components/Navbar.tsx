@@ -6,10 +6,19 @@ import { Menu, X, Plane } from "lucide-react";
 interface NavbarProps {
   onOpenBooking: () => void;
   onOpenDiscover: () => void;
+  onOpenAuth?: () => void;
 }
 
-export default function Navbar({ onOpenBooking, onOpenDiscover }: NavbarProps) {
+export default function Navbar({ onOpenBooking, onOpenDiscover, onOpenAuth }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("skyelite_user_email");
+      if (stored) setUserEmail(stored);
+    }
+  }, []);
 
   return (
     <header className="absolute top-0 left-0 right-0 z-40 w-full">
@@ -50,7 +59,13 @@ export default function Navbar({ onOpenBooking, onOpenDiscover }: NavbarProps) {
         </nav>
 
         {/* Desktop CTA */}
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-3">
+          <button
+            onClick={onOpenAuth}
+            className="px-4 py-2 rounded-full border border-[#202A36]/30 text-[#202A36] text-xs font-bold hover:bg-[#202A36]/5 transition-all flex items-center gap-1.5"
+          >
+            {userEmail ? `👤 ${userEmail.split('@')[0]}` : "🔐 Sign In / Sign Up"}
+          </button>
           <button
             onClick={onOpenBooking}
             className="px-5 py-2.5 rounded-full bg-[#202A36] text-white text-sm font-medium hover:bg-[#1a2229] shadow-md transition-all duration-300 hover:-translate-y-0.5"
