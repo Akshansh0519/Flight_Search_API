@@ -1,9 +1,10 @@
 import axios from 'axios';
 
-// All Services → proxied through API Gateway Service (localhost:5000)
-const flightsAPI = axios.create({ baseURL: '/api/v1' });
-const bookingsAPI = axios.create({ baseURL: '/api/v1' });
-const authAPI = axios.create({ baseURL: '/api/v1' });
+// All Services → proxied through API Gateway Service (or local Next.js rewrites)
+const GATEWAY_URL = process.env.NEXT_PUBLIC_API_GATEWAY_URL || '/api/v1';
+const flightsAPI = axios.create({ baseURL: GATEWAY_URL });
+const bookingsAPI = axios.create({ baseURL: GATEWAY_URL });
+const authAPI = axios.create({ baseURL: GATEWAY_URL });
 
 // Helper to get token from localStorage safely in browser
 export function getAuthToken(): string | null {

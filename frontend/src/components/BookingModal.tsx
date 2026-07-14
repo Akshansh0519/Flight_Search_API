@@ -21,7 +21,7 @@ type Step = "SEARCH" | "SELECT" | "CONFIRM" | "SUCCESS" | "ERROR";
 export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   // ─── Search state ───
   const [airports, setAirports] = useState<Airport[]>([
-    { id: 1, name: "Indira Gandhi International Airport", code: "IGA", address: "New Delhi", cityId: 2 },
+    { id: 1, name: "Indira Gandhi International Airport", code: "DEL", address: "New Delhi", cityId: 2 },
     { id: 2, name: "Rajiv Gandhi International Airport", code: "HYD", address: "Hyderabad", cityId: 8 },
     { id: 4, name: "Chhatrapati Shivaji Maharaj International Airport", code: "BOM", address: "Mumbai", cityId: 9 },
     { id: 5, name: "Kempegowda International Airport", code: "BLR", address: "Bengaluru", cityId: 4 },
@@ -71,7 +71,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   }, [isOpen]);
 
 const DEFAULT_AIRPORTS: Airport[] = [
-  { id: 1, name: "Indira Gandhi International Airport", code: "IGA", address: "New Delhi", cityId: 2 },
+  { id: 1, name: "Indira Gandhi International Airport", code: "DEL", address: "New Delhi", cityId: 2 },
   { id: 2, name: "Rajiv Gandhi International Airport", code: "HYD", address: "Hyderabad", cityId: 8 },
   { id: 4, name: "Chhatrapati Shivaji Maharaj International Airport", code: "BOM", address: "Mumbai", cityId: 9 },
   { id: 5, name: "Kempegowda International Airport", code: "BLR", address: "Bengaluru", cityId: 4 },
