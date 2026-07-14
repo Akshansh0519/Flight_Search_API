@@ -1,10 +1,17 @@
 import axios from 'axios';
 
-// All Services → proxied through API Gateway Service (or local Next.js rewrites)
-const GATEWAY_URL = process.env.NEXT_PUBLIC_API_GATEWAY_URL || '/api/v1';
-const flightsAPI = axios.create({ baseURL: GATEWAY_URL });
-const bookingsAPI = axios.create({ baseURL: GATEWAY_URL });
-const authAPI = axios.create({ baseURL: GATEWAY_URL });
+// Strip any trailing /api/v1 or slashes so we get the clean base gateway URL (e.g. https://skyelite-api-gateway.onrender.com)
+const rawGateway = process.env.NEXT_PUBLIC_API_GATEWAY_URL?.replace(/\/api\/v1\/?$/, '').replace(/\/$/, '');
+
+const flightsAPI = axios.create({
+  baseURL: rawGateway ? `${rawGateway}/flightService/api/v1` : '/api/v1'
+});
+const bookingsAPI = axios.create({
+  baseURL: rawGateway ? `${rawGateway}/bookingService/api/v1` : '/api/v1'
+});
+const authAPI = axios.create({
+  baseURL: rawGateway ? `${rawGateway}/api/v1` : '/api/v1'
+});
 
 // Helper to get token from localStorage safely in browser
 export function getAuthToken(): string | null {

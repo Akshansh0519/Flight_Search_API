@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const gatewayUrl = process.env.NEXT_PUBLIC_API_GATEWAY_URL?.replace('/api/v1', '') || process.env.API_GATEWAY_URL || 'http://127.0.0.1:5000';
+const gatewayUrl = (process.env.NEXT_PUBLIC_API_GATEWAY_URL || process.env.API_GATEWAY_URL || 'http://127.0.0.1:5000').replace(/\/api\/v1\/?$/, '').replace(/\/$/, '');
 
 const nextConfig: NextConfig = {
   async rewrites() {
