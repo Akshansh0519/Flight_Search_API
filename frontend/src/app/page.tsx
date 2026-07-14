@@ -7,6 +7,7 @@ import ArchitectureHub from "@/components/ArchitectureHub";
 import BookingModal from "@/components/BookingModal";
 import DiscoverModal from "@/components/DiscoverModal";
 import AuthModal from "@/components/AuthModal";
+import BackendStatusBanner from "@/components/BackendStatusBanner";
 
 export default function Home() {
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
@@ -78,6 +79,8 @@ export default function Home() {
         onOpenBooking={() => setBookingModalOpen(true)}
         defaultTab={discoverModalTab}
       />
+
+      <BackendStatusBanner />
     </main>
   );
 }
