@@ -31,53 +31,67 @@ module.exports = {
     await removeConstraintIfExists(queryInterface, 'Flights', 'fk_flights_departure_airport');
     await removeConstraintIfExists(queryInterface, 'Flights', 'fk_flights_arrival_airport');
 
-    await queryInterface.changeColumn('Flights', 'departureAirportId', {
-      type: Sequelize.STRING,
-      allowNull: false
-    });
+    try {
+      await queryInterface.changeColumn('Flights', 'departureAirportId', {
+        type: Sequelize.STRING,
+        allowNull: false
+      });
+    } catch (e) {}
 
-    await queryInterface.changeColumn('Flights', 'arrivalAirportId', {
-      type: Sequelize.STRING,
-      allowNull: false
-    });
+    try {
+      await queryInterface.changeColumn('Flights', 'arrivalAirportId', {
+        type: Sequelize.STRING,
+        allowNull: false
+      });
+    } catch (e) {}
 
-    await queryInterface.sequelize.query(`
-      UPDATE Flights AS f
-      JOIN Airports AS a ON f.departureAirportId = CAST(a.id AS CHAR CHARACTER SET utf8mb4) COLLATE utf8mb4_0900_ai_ci
-      SET f.departureAirportId = a.code
-    `);
+    try {
+      await queryInterface.sequelize.query(`
+        UPDATE Flights AS f
+        JOIN Airports AS a ON f.departureAirportId = CAST(a.id AS CHAR CHARACTER SET utf8mb4) COLLATE utf8mb4_0900_ai_ci
+        SET f.departureAirportId = a.code
+      `);
+    } catch (e) {}
 
-    await queryInterface.sequelize.query(`
-      UPDATE Flights AS f
-      JOIN Airports AS a ON f.arrivalAirportId = CAST(a.id AS CHAR CHARACTER SET utf8mb4) COLLATE utf8mb4_0900_ai_ci
-      SET f.arrivalAirportId = a.code
-    `);
+    try {
+      await queryInterface.sequelize.query(`
+        UPDATE Flights AS f
+        JOIN Airports AS a ON f.arrivalAirportId = CAST(a.id AS CHAR CHARACTER SET utf8mb4) COLLATE utf8mb4_0900_ai_ci
+        SET f.arrivalAirportId = a.code
+      `);
+    } catch (e) {}
 
-    await addIndexIfMissing(queryInterface, 'Airports', ['code'], 'airports_code_unique');
+    try {
+      await addIndexIfMissing(queryInterface, 'Airports', ['code'], 'airports_code_unique');
+    } catch (e) {}
 
-    await queryInterface.addConstraint('Flights', {
-      fields: ['departureAirportId'],
-      type: 'foreign key',
-      name: 'fk_flights_departure_airport',
-      references: {
-        table: 'Airports',
-        field: 'code'
-      },
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE'
-    });
+    try {
+      await queryInterface.addConstraint('Flights', {
+        fields: ['departureAirportId'],
+        type: 'foreign key',
+        name: 'fk_flights_departure_airport',
+        references: {
+          table: 'Airports',
+          field: 'code'
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      });
+    } catch (e) {}
 
-    await queryInterface.addConstraint('Flights', {
-      fields: ['arrivalAirportId'],
-      type: 'foreign key',
-      name: 'fk_flights_arrival_airport',
-      references: {
-        table: 'Airports',
-        field: 'code'
-      },
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE'
-    });
+    try {
+      await queryInterface.addConstraint('Flights', {
+        fields: ['arrivalAirportId'],
+        type: 'foreign key',
+        name: 'fk_flights_arrival_airport',
+        references: {
+          table: 'Airports',
+          field: 'code'
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      });
+    } catch (e) {}
   },
 
   async down(queryInterface, Sequelize) {

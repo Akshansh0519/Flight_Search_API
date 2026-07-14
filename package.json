@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "npx nodemon src/index.js"
+    "start": "npx nodemon src/index.js",
+    "seed": "npx sequelize-cli db:seed:all"
   },
   "keywords": [],
   "author": "Akshansh Ranjan",
