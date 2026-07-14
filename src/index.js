@@ -3,7 +3,8 @@ const { ServerConfig  , Logger} = require('./config');
 const express = require('express');
 const cors = require('cors');
 const app = express();
-app.use(cors());
+app.use(cors({ origin: true, credentials: true }));
+app.options('*', cors({ origin: true, credentials: true }));
 const apiRoutes = require('./routes');
 
 app.use(express.json());
