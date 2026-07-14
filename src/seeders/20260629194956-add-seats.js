@@ -3,100 +3,25 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    /**
-     * Add seed commands here.
-     *
-     * Example:
-     * await queryInterface.bulkInsert('People', [{
-     *   name: 'John Doe',
-     *   isBetaMember: false
-     * }],
-     * 
-     *  {});
-    */
+    const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    await queryInterface.sequelize.query(`
+      INSERT IGNORE INTO Airplanes (id, modelNumber, capacity, createdAt, updatedAt)
+      VALUES (1, 'Airbus A320neo', 180, '${now}', '${now}')
+    `);
 
-    await queryInterface.bulkInsert('Seats', [
-      {
-        airplaneId: 1,
-        row: 1,
-        col: 'A', 
-        class: 'economy',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        airplaneId: 1,
-        row: 1,
-        col: 'B', 
-        class: 'economy',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        airplaneId: 1,
-        row: 1,
-        col: 'C', 
-        class: 'economy',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        airplaneId: 1,
-        row: 1,
-        col: 'D', 
-        class: 'first',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        airplaneId: 1,
-        row: 1,
-        col: 'E', 
-        class: 'first',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        airplaneId: 1,
-        row: 2,
-        col: 'A', 
-        class: 'economy',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        airplaneId: 1,
-        row: 2,
-        col: 'B', 
-        class: 'economy',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        airplaneId: 1,
-        row: 2,
-        col: 'C', 
-        class: 'economy',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        airplaneId: 1,
-        row: 2,
-        col: 'D', 
-        class: 'first',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        airplaneId: 1,
-        row: 2,
-        col: 'E', 
-        class: 'first',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-    ])
+    await queryInterface.sequelize.query(`
+      INSERT IGNORE INTO Seats (airplaneId, \`row\`, col, class, createdAt, updatedAt) VALUES
+      (1, 1, 'A', 'economy', '${now}', '${now}'),
+      (1, 1, 'B', 'economy', '${now}', '${now}'),
+      (1, 1, 'C', 'economy', '${now}', '${now}'),
+      (1, 1, 'D', 'first', '${now}', '${now}'),
+      (1, 1, 'E', 'first', '${now}', '${now}'),
+      (1, 2, 'A', 'economy', '${now}', '${now}'),
+      (1, 2, 'B', 'economy', '${now}', '${now}'),
+      (1, 2, 'C', 'economy', '${now}', '${now}'),
+      (1, 2, 'D', 'first', '${now}', '${now}'),
+      (1, 2, 'E', 'first', '${now}', '${now}')
+    `);
   },
 
   async down (queryInterface, Sequelize) {
