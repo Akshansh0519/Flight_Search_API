@@ -9,16 +9,14 @@ module.exports = {
 
     await queryInterface.changeColumn('Cities', 'code', {
       type: Sequelize.STRING,
-      allowNull: false,
-      unique: true
+      allowNull: false
     });
   },
 
   async down(queryInterface, Sequelize) {
     await queryInterface.changeColumn('Cities', 'code', {
       type: Sequelize.STRING,
-      allowNull: true,
-      unique: true
+      allowNull: true
     });
   }
 };
