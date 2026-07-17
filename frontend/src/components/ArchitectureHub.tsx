@@ -220,10 +220,10 @@ export default function ArchitectureHub({ onOpenBooking, onOpenDiscover }: Archi
               SYSTEM DESIGN HIGHLIGHT
             </div>
             <h3 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
-              Why Engineers & Recruiters Love SkyElite
+              How SkyElite Solves Real Engineering Problems
             </h3>
             <p className="text-white/95 text-base sm:text-lg leading-relaxed font-normal">
-              Unlike basic monolithic CRUD applications, SkyElite decouples seat reservation (<code className="bg-black/30 px-2 py-0.5 rounded font-mono text-sm">Port 3000</code>), payment verification (<code className="bg-black/30 px-2 py-0.5 rounded font-mono text-sm">Port 4000</code>), and asynchronous email dispatch (<code className="bg-black/30 px-2 py-0.5 rounded font-mono text-sm">Port 3002</code>) over RabbitMQ queues—guaranteeing strict ACID transactions and eliminating double-billing race conditions.
+              SkyElite partitions each domain across independent services—the <code className="bg-black/30 px-2 py-0.5 rounded font-mono text-sm">Flight Catalog</code>, <code className="bg-black/30 px-2 py-0.5 rounded font-mono text-sm">Booking Engine</code>, and <code className="bg-black/30 px-2 py-0.5 rounded font-mono text-sm">Notification Worker</code>—enforcing <code className="bg-black/30 px-2 py-0.5 rounded font-mono text-sm">SELECT FOR UPDATE</code> row locks for overbooking prevention, idempotency keys against double-charging, and fully decoupled asynchronous E-ticket dispatch over persistent RabbitMQ queues with manual <code className="bg-black/30 px-2 py-0.5 rounded font-mono text-sm">channel.ack</code> acknowledgments.
             </p>
           </div>
 
